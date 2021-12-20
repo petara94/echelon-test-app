@@ -1,4 +1,4 @@
-FROM amd64/golang:latest
+FROM golang:windowsservercore-ltsc2016
 
 WORKDIR /go/src/app
 COPY ./executer_server .
