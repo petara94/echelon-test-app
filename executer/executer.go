@@ -31,13 +31,13 @@ type Machine struct {
 
 func (m Machine) Exec(cmd, stdin string) (*ExecResult, error) {
 
-	commads := strings.Split(cmd, "|")
+	commands := strings.Split(cmd, "|")
 
 	var stderr bytes.Buffer
 
 	var runner *exec.Cmd
 
-	for _, command := range commads {
+	for _, command := range commands {
 		command = strings.Trim(command, " ")
 
 		runner = exec.Command(strings.Split(command, " ")[0],
