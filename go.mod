@@ -1,4 +1,4 @@
-module executer_server
+module echelon-test-app
 
 go 1.17
 

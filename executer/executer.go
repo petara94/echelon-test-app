@@ -38,6 +38,7 @@ func (m Machine) Exec(cmd, stdin string) (*ExecResult, error) {
 	var runner *exec.Cmd
 
 	for _, command := range commands {
+		// Удаление пробелов по краям
 		command = strings.Trim(command, " ")
 
 		runner = exec.Command(strings.Split(command, " ")[0],
@@ -58,25 +59,26 @@ func (m Machine) Exec(cmd, stdin string) (*ExecResult, error) {
 			return nil, err
 		}
 
-		stdinByte, err := io.ReadAll(outToIn)
+		stdinByte, _ := io.ReadAll(outToIn)
 		stdin = string(stdinByte)
 
-		if err != runner.Wait() {
-			return nil, err
-		}
+		_ = runner.Wait()
 	}
 
 	return &ExecResult{stdin, stderr.String()}, nil
 }
 
+// NewMachine Конструктор Machine
 func NewMachine(OS string) *Machine {
 	return &Machine{OS}
 }
 
+// StartLinuxMachine Конструктор linux Machine
 func StartLinuxMachine() *Machine {
 	return NewMachine(LINUX_OS)
 }
 
+// StartWinMachine Конструктор windows Machine
 func StartWinMachine() *Machine {
 	return NewMachine(WINDOWS_OS)
 }
