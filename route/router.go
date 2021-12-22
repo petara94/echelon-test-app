@@ -33,12 +33,15 @@ func RouteExec(c *gin.Context) {
 	}
 
 	var body executer.RequestBody
+
+	// Проверка Входящих данных
 	err = json.Unmarshal(bodyRaw, &body)
 	if err != nil {
 		c.JSON(400, executer.NewBadExecResult(nil, err.Error()))
 		return
 	}
 
+	// Проверка совместимости системы
 	if body.OS != executer.MainMachine.OS {
 		c.JSON(400, executer.NewBadExecResult(&body, executer.ERROR_EXEC_OS))
 		return
@@ -46,6 +49,7 @@ func RouteExec(c *gin.Context) {
 
 	result, err := executer.MainMachine.Exec(body.CMD, body.Stdin)
 
+	// Если возникли критические ошибки отпрвить request с ошибкой
 	if err != nil {
 		c.JSON(400, executer.NewBadExecResult(&body, err.Error()))
 		return
@@ -92,6 +96,7 @@ func RouteExecAll(c *gin.Context) {
 }
 
 // RouteAsyncExecAll Асинхронное выполнение массива команд
+// например для множества пингов
 func RouteAsyncExecAll(c *gin.Context) {
 	bodyRaw, err := io.ReadAll(c.Request.Body)
 
@@ -108,8 +113,10 @@ func RouteAsyncExecAll(c *gin.Context) {
 	}
 
 	Results := make([]interface{}, 0)
+
 	wg := sync.WaitGroup{}
 	wg.Add(len(body))
+
 	for _, task := range body {
 		go func(task executer.RequestBody, wg *sync.WaitGroup) {
 			defer wg.Done()

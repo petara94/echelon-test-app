@@ -6,6 +6,7 @@ import (
 
 var MainMachine *Machine
 
+// StartMachine инициализация исполнителя команд
 func StartMachine() {
 	var err error
 	MainMachine, err = AutoStartMachine()

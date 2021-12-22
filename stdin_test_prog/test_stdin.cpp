@@ -7,6 +7,7 @@ int main() {
     cin >> a;
     cin >> b;
 
+    // Простая программа для проверки stdin
     cout << "a + a * b = " <<a + a*b << endl;
 
     return 0;

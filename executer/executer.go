@@ -16,10 +16,13 @@ type RequestBody struct {
 	Stdin string `json:"stdin"`
 }
 
+// ExecResult Структура для удачного выполнения
 type ExecResult struct {
 	Stdout string `json:"stdout"`
 	Stderr string `json:"stderr"`
 }
+
+// BadExecResult Структура для вывода ошибок выполнения
 type BadExecResult struct {
 	Request *RequestBody `json:"command"`
 	Error   string       `json:"error"`
@@ -37,6 +40,7 @@ func (m Machine) Exec(cmd, stdin string) (*ExecResult, error) {
 
 	var runner *exec.Cmd
 
+	// Выполнение с перенаправлением stdout в stdin
 	for _, command := range commands {
 		// Удаление пробелов по краям
 		command = strings.Trim(command, " ")
