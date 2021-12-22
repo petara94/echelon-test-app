@@ -52,7 +52,7 @@ func TestWinHttp1(t *testing.T) {
 
 	Rb := executer.RequestBody{
 		CMD:   "ping 0.0.0.0 -c 1",
-		OS:    "linux",
+		OS:    "windows",
 		Stdin: "",
 	}
 
