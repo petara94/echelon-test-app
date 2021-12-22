@@ -1,4 +1,4 @@
-package main
+package route
 
 import (
 	"echelon-test-app/executer"
@@ -14,7 +14,7 @@ func InitRouter() *gin.Engine {
 
 	rg := router.Group("api/v1")
 	rg.GET("/os", func(c *gin.Context) {
-		c.JSON(200, machine)
+		c.JSON(200, executer.MainMachine)
 	})
 
 	rg.GET("/exec", RouteExec)
@@ -39,12 +39,12 @@ func RouteExec(c *gin.Context) {
 		return
 	}
 
-	if body.OS != machine.OS {
+	if body.OS != executer.MainMachine.OS {
 		c.JSON(400, executer.NewBadExecResult(&body, executer.ERROR_EXEC_OS))
 		return
 	}
 
-	result, err := machine.Exec(body.CMD, body.Stdin)
+	result, err := executer.MainMachine.Exec(body.CMD, body.Stdin)
 	if err != nil {
 		c.JSON(400, executer.NewBadExecResult(&body, err.Error()))
 		return
@@ -71,12 +71,12 @@ func RouteExecAll(c *gin.Context) {
 	Results := make([]interface{}, 0)
 
 	for _, task := range body {
-		if task.OS != machine.OS {
+		if task.OS != executer.MainMachine.OS {
 			Results = append(Results, executer.NewBadExecResult(&task, executer.ERROR_EXEC_OS))
 			continue
 		}
 
-		ans, err := machine.Exec(task.CMD, task.Stdin)
+		ans, err := executer.MainMachine.Exec(task.CMD, task.Stdin)
 
 		if err != nil {
 			Results = append(Results, executer.NewBadExecResult(&task, err.Error()))
@@ -110,12 +110,12 @@ func RouteAsyncExecAll(c *gin.Context) {
 	for _, task := range body {
 		go func(task executer.RequestBody, wg *sync.WaitGroup) {
 			defer wg.Done()
-			if task.OS != machine.OS {
+			if task.OS != executer.MainMachine.OS {
 				Results = append(Results, executer.NewBadExecResult(&task, executer.ERROR_EXEC_OS))
 				return
 			}
 
-			ans, err := machine.Exec(task.CMD, task.Stdin)
+			ans, err := executer.MainMachine.Exec(task.CMD, task.Stdin)
 
 			if err != nil {
 				Results = append(Results, executer.NewBadExecResult(&task, err.Error()))

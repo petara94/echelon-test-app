@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"executer_server/executer"
+	"echelon-test-app/executer"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -12,14 +12,14 @@ func TestMachine_exec(t *testing.T) {
 
 	assert.Nil(t, err)
 
-	res, err := mach.Exec("echo 123 | wc", "")
+	res, err := mach.Exec("echo 123", "")
 
 	assert.Nil(t, err)
 	if err != nil {
 		return
 	}
 
-	assert.Equal(t, res.Stdout, "      1       1       4\n")
+	assert.Equal(t, res.Stdout, "123\n")
 }
 
 func TestMachine_exec2(t *testing.T) {
@@ -28,9 +28,12 @@ func TestMachine_exec2(t *testing.T) {
 
 	assert.Nil(t, err)
 
-	res, err := mach.Exec("../stdini_test_prog/test_stdin", "2\n2\n")
+	res, err := mach.Exec("../stdin_test_prog/test_stdin", "2\n2\n")
 
 	assert.Nil(t, err)
+	if err != nil {
+		return
+	}
 
 	assert.Equal(t, res.Stdout, "a + a * b = 6\n")
 }
