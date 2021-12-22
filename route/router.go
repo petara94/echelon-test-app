@@ -45,6 +45,7 @@ func RouteExec(c *gin.Context) {
 	}
 
 	result, err := executer.MainMachine.Exec(body.CMD, body.Stdin)
+
 	if err != nil {
 		c.JSON(400, executer.NewBadExecResult(&body, err.Error()))
 		return
@@ -82,6 +83,7 @@ func RouteExecAll(c *gin.Context) {
 			Results = append(Results, executer.NewBadExecResult(&task, err.Error()))
 			continue
 		}
+
 		Results = append(Results, ans)
 	}
 
