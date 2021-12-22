@@ -3,8 +3,10 @@ package executer
 import (
 	"bytes"
 	"errors"
+	"io"
 	"os/exec"
 	"runtime"
+	"strings"
 )
 
 // RequestBody Структура для приходящих пакетов на выполнение
@@ -29,21 +31,42 @@ type Machine struct {
 
 func (m Machine) Exec(cmd, stdin string) (*ExecResult, error) {
 
-	runner := exec.Command("sh")
-	runner.Stdin = bytes.NewReader([]byte(cmd + "\n" + stdin + "\nexit"))
+	commads := strings.Split(cmd, "|")
 
-	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	runner.Stdout = &stdout
-	runner.Stderr = &stderr
 
-	err := runner.Run()
+	var runner *exec.Cmd
 
-	if err != nil {
-		return nil, err
+	for _, command := range commads {
+		command = strings.Trim(command, " ")
+
+		runner = exec.Command(strings.Split(command, " ")[0],
+			strings.Split(command, " ")[1:]...)
+
+		runner.Stdin = bytes.NewReader([]byte(stdin))
+		runner.Stderr = &stderr
+
+		outToIn, err := runner.StdoutPipe()
+
+		if err != nil {
+			return nil, err
+		}
+
+		err = runner.Start()
+
+		if err != nil {
+			return nil, err
+		}
+
+		stdinByte, err := io.ReadAll(outToIn)
+		stdin = string(stdinByte)
+
+		if err != runner.Wait() {
+			return nil, err
+		}
 	}
 
-	return &ExecResult{stdout.String(), stderr.String()}, nil
+	return &ExecResult{stdin, stderr.String()}, nil
 }
 
 func NewMachine(OS string) *Machine {
