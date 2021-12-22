@@ -18,7 +18,7 @@ func TestWinExec1(t *testing.T) {
 
 	assert.Nil(t, err)
 
-	res, err := mach.Exec("ping 0.0.0.0 -c 1", "")
+	_, err = mach.Exec("ping 0.0.0.0 -c 1", "")
 
 	assert.Nil(t, err)
 	if err != nil {
@@ -34,7 +34,7 @@ func TestWinExec2(t *testing.T) {
 
 	assert.Nil(t, err)
 
-	res, err := mach.Exec("ping 0.0.0.0 -c 1", "")
+	_, err = mach.Exec("ping 0.0.0.0 -c 1", "")
 
 	assert.Nil(t, err)
 	if err != nil {
