@@ -13,7 +13,7 @@ func main() {
 	router := route.InitRouter()
 
 	// Запуск сервера
-	err := router.RunTLS(":"+executer.PORT, "./ssl/server.crt", "./ssl/server.key")
+	err := router.RunTLS(":"+executer.PORT, "./tls/server.crt", "./tls/server.key")
 	if err != nil {
 		log.Fatal(err)
 	}
